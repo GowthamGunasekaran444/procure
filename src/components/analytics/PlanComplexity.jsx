@@ -72,16 +72,16 @@ const PlanComplexity = ({ complexity }) => {
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'center' }}>
-                <div style={{ height: '240px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                <div style={{ height: '300px', background: '#f8fafc', borderRadius: '24px', padding: '24px' }}>
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie
                                 data={data}
                                 cx="50%"
                                 cy="50%"
-                                innerRadius={60}
-                                outerRadius={80}
+                                innerRadius={70}
+                                outerRadius={100}
                                 paddingAngle={5}
                                 dataKey="value"
                             >
@@ -94,18 +94,28 @@ const PlanComplexity = ({ complexity }) => {
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
-                <div>
-                    <div style={{ padding: '16px', border: '1px solid #e2e8f0', borderRadius: '12px', backgroundColor: '#fdfaff' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#6b21a8', fontWeight: 600, marginBottom: '12px' }}>
-                            <Info size={16} />
-                            Most Complex Conversation
+
+                <div style={{ padding: '24px', border: '1px solid #e2e8f0', borderRadius: '20px', backgroundColor: '#fdfaff' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#6b21a8', fontWeight: 800, marginBottom: '16px', fontSize: '14px' }}>
+                        <Info size={18} />
+                        Strategic Insight: Peak Logic Load
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '16px' }}>
+                        <div>
+                            <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '4px' }}>Most Complex Execution</div>
+                            <code style={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', padding: '4px 8px', borderRadius: '6px', fontSize: '12px', color: '#1e293b' }}>
+                                {complexity.most_complex_conversation.conversation_id}
+                            </code>
                         </div>
-                        <div style={{ fontSize: '13px', color: '#1e293b', marginBottom: '8px' }}>
-                            ID: <code style={{ backgroundColor: '#f1f5f9', padding: '2px 4px', borderRadius: '4px', fontSize: '11px' }}>{complexity.most_complex_conversation.conversation_id}</code>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#64748b' }}>
-                            <span>Subqueries: <strong>{complexity.most_complex_conversation.num_subqueries}</strong></span>
-                            <span>{new Date(complexity.most_complex_conversation.created_at).toLocaleDateString()}</span>
+                        <div style={{ display: 'flex', gap: '32px' }}>
+                            <div>
+                                <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '4px' }}>Subqueries</div>
+                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#1e293b' }}>{complexity.most_complex_conversation.num_subqueries}</div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '4px' }}>Timestamp</div>
+                                <div style={{ fontSize: '14px', fontWeight: 600, color: '#475569' }}>{new Date(complexity.most_complex_conversation.created_at).toLocaleDateString()}</div>
+                            </div>
                         </div>
                     </div>
                 </div>

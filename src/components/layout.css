@@ -288,15 +288,14 @@
     background-color: #f9fbfd;
     position: relative;
     z-index: 20;
-    /* Higher than sidebar to allow tooltips to overlap */
-    overflow: visible;
-    /* Allow tooltips to overflow into sidebar area */
+    min-width: 0;
 }
 
 .dashboard-content {
     flex-grow: 1;
-    padding: 24px;
+    padding: 0;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* Tooltips */

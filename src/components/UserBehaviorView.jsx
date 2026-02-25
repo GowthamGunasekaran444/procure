@@ -1,12 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import jsonData from '../assets/output.json';
-import { Users, Search, MoreHorizontal, Mail, MapPin, Briefcase, Building2, User } from 'lucide-react';
+import { Users, Search, MoreHorizontal, Mail, MapPin, Briefcase, Building2, User, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 
 const UserBehaviorView = ({ timeRange, allUsers = [] }) => {
     const data = jsonData[timeRange] || jsonData['1h'];
     const userBehavior = data.analytics.user_behavior;
     const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 20;
 
     // Merge and prepare user data
     const processedUsers = useMemo(() => {
@@ -59,13 +61,26 @@ const UserBehaviorView = ({ timeRange, allUsers = [] }) => {
     }, [userBehavior, allUsers]);
 
     // Filter based on search
-    const filteredUsers = processedUsers.filter(u =>
-        u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.designation.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.id.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredUsers = useMemo(() => {
+        return processedUsers.filter(u =>
+            u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            u.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            u.designation.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            u.id.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [processedUsers, searchTerm]);
+
+    // Reset page when search changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
+
+    const totalPages = Math.ceil(filteredUsers.length / pageSize);
+    const paginatedUsers = useMemo(() => {
+        const start = (currentPage - 1) * pageSize;
+        return filteredUsers.slice(start, start + pageSize);
+    }, [filteredUsers, currentPage, pageSize]);
 
     const segmentation = [
         { name: 'Power Users', value: userBehavior.segmentation.power_users.count, color: '#8b5cf6' },
@@ -93,8 +108,9 @@ const UserBehaviorView = ({ timeRange, allUsers = [] }) => {
                 </div>
             </div>
 
-            <div className="dashboard-grid-top" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-                <div className="card" style={{ padding: '24px', minHeight: '380px' }}>
+            {/* Changed to separate lines as requested */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '32px' }}>
+                <div className="card" style={{ padding: '24px' }}>
                     <h4 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
                         User Segmentation
                     </h4>
@@ -124,7 +140,7 @@ const UserBehaviorView = ({ timeRange, allUsers = [] }) => {
                     </div>
                 </div>
 
-                <div className="card" style={{ padding: '24px', minHeight: '380px' }}>
+                <div className="card" style={{ padding: '24px' }}>
                     <h4 className="card-title" style={{ marginBottom: '20px' }}>Engagement Insights</h4>
                     <div style={{ color: '#6b7280', fontSize: '15px', lineHeight: '1.7' }}>
                         <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '16px', marginBottom: '20px' }}>
@@ -134,27 +150,30 @@ const UserBehaviorView = ({ timeRange, allUsers = [] }) => {
                         </div>
 
                         <p style={{ fontWeight: 600, color: '#374151', marginBottom: '12px' }}>Recommended Strategies:</p>
-                        <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            <li style={{ display: 'flex', gap: '12px', alignItems: 'start' }}>
-                                <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#10b98120', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px', fontSize: '12px' }}>•</div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                            <div style={{ display: 'flex', gap: '12px', alignItems: 'start', padding: '16px', background: '#f1f5f9', borderRadius: '12px' }}>
+                                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#10b98120', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '12px', fontWeight: 'bold' }}>1</div>
                                 <span>Launch <strong>onboarding campaigns</strong> tailored for casual users to showcase advanced features.</span>
-                            </li>
-                            <li style={{ display: 'flex', gap: '12px', alignItems: 'start' }}>
-                                <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#3b82f620', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px', fontSize: '12px' }}>•</div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '12px', alignItems: 'start', padding: '16px', background: '#f1f5f9', borderRadius: '12px' }}>
+                                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#3b82f620', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '12px', fontWeight: 'bold' }}>2</div>
                                 <span>Send <strong>feature highlighting</strong> digests to regular users to transition them to power users.</span>
-                            </li>
-                            <li style={{ display: 'flex', gap: '12px', alignItems: 'start' }}>
-                                <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#8b5cf620', color: '#8b5cf6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px', fontSize: '12px' }}>•</div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '12px', alignItems: 'start', padding: '16px', background: '#f1f5f9', borderRadius: '12px' }}>
+                                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#8b5cf620', color: '#8b5cf6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '12px', fontWeight: 'bold' }}>3</div>
                                 <span>Implement <strong>loyalty recognition</strong> for power users to maintain high engagement levels.</span>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div className="card" style={{ padding: '24px' }}>
+            <div className="card" style={{ padding: '24px', overflow: 'visible' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-                    <h4 className="card-title" style={{ margin: 0 }}>Detailed User Base</h4>
+                    <div>
+                        <h4 className="card-title" style={{ margin: 0 }}>Detailed User Base</h4>
+                        <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 0 0' }}>Showing {paginatedUsers.length} of {filteredUsers.length} total users</p>
+                    </div>
                     <div style={{ position: 'relative', width: '300px' }}>
                         <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
                         <input
@@ -169,14 +188,15 @@ const UserBehaviorView = ({ timeRange, allUsers = [] }) => {
                                 border: '1px solid #e2e8f0',
                                 fontSize: '14px',
                                 outline: 'none',
-                                transition: 'border-color 0.2s'
+                                transition: 'border-color 0.2s',
+                                backgroundColor: '#f8fafc'
                             }}
                         />
                     </div>
                 </div>
 
-                <div style={{ overflowX: 'auto', margin: '0 -24px' }}>
-                    <table className="drilldown-table" style={{ borderTop: '1px solid #f1f5f9' }}>
+                <div style={{ overflowX: 'auto', margin: '0 -24px' }} className="custom-scrollbar">
+                    <table className="drilldown-table" style={{ borderTop: '1px solid #f1f5f9', minWidth: '900px' }}>
                         <thead>
                             <tr>
                                 <th style={{ paddingLeft: '24px' }}>User Details</th>
@@ -188,7 +208,7 @@ const UserBehaviorView = ({ timeRange, allUsers = [] }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredUsers.length > 0 ? filteredUsers.map((u, i) => (
+                            {paginatedUsers.length > 0 ? paginatedUsers.map((u, i) => (
                                 <tr key={u.id}>
                                     <td style={{ paddingLeft: '24px' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -246,7 +266,7 @@ const UserBehaviorView = ({ timeRange, allUsers = [] }) => {
                                     </td>
                                     <td style={{ textAlign: 'center', paddingRight: '24px' }}>
                                         <button className="icon-btn" style={{ padding: '8px' }}>
-                                            <MoreHorizontal size={16} />
+                                            < MoreHorizontal size={16} />
                                         </button>
                                     </td>
                                 </tr>
@@ -261,6 +281,47 @@ const UserBehaviorView = ({ timeRange, allUsers = [] }) => {
                         </tbody>
                     </table>
                 </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div style={{ padding: '16px 24px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8fafc', margin: '0 -24px -24px -24px', borderRadius: '0 0 16px 16px' }}>
+                        <div style={{ fontSize: '13px', color: '#64748b' }}>
+                            Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button
+                                onClick={() => setCurrentPage(1)}
+                                disabled={currentPage === 1}
+                                className="icon-btn"
+                                style={{ padding: '8px', border: '1px solid #e2e8f0', background: currentPage === 1 ? '#f1f5f9' : '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: '#64748b' }}
+                            >
+                                <ChevronsLeft size={16} />
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                disabled={currentPage === 1}
+                                style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', background: currentPage === 1 ? '#f1f5f9' : '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: '#64748b', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            >
+                                <ChevronLeft size={16} /> Prev
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                                disabled={currentPage === totalPages}
+                                style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', background: currentPage === totalPages ? '#f1f5f9' : '#fff', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', color: '#64748b', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            >
+                                Next <ChevronRight size={16} />
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage(totalPages)}
+                                disabled={currentPage === totalPages}
+                                className="icon-btn"
+                                style={{ padding: '8px', border: '1px solid #e2e8f0', background: currentPage === totalPages ? '#f1f5f9' : '#fff', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', color: '#64748b' }}
+                            >
+                                <ChevronsRight size={16} />
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

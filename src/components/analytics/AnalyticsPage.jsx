@@ -60,11 +60,9 @@ const AnalyticsPage = ({ data }) => {
                     turnFailures={analytics.turn_failures}
                 />
 
-                {/* Secondary Analytics (Side by Side) */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: '24px' }}>
-                    <PlanComplexity complexity={analytics.plan_complexity} />
-                    <UserBehavior behavior={analytics.user_behavior} />
-                </div>
+                {/* Secondary Analytics (Stacked Full Width) */}
+                <PlanComplexity complexity={analytics.plan_complexity} />
+                <UserBehavior behavior={analytics.user_behavior} />
 
                 {/* Time Trends (Full Width) */}
                 <TimeTrends trends={analytics.time_trends} />

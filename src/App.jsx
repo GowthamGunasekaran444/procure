@@ -271,10 +271,12 @@ function App() {
       case 'raw':
         return (
           <DataExplorer
-            title="Raw Messages"
+            title="Raw Logs"
             data={cachedData.messages || []}
             columns={messageColumns}
             renderExpandedRow={renderMessageExpandedRow}
+            pageSize={10}
+            showFilters={true}
           />
         );
       default:
