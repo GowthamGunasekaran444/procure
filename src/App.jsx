@@ -5,6 +5,7 @@ import DashboardOverview from './components/DashboardOverview';
 import DataExplorer from './components/DataExplorer';
 import AnalyticsView from './components/AnalyticsView';
 import UserBehaviorView from './components/UserBehaviorView';
+import EventVisualizer from './components/EventVisualizer';
 import { Layout, FileText, Layers, Info, CheckCircle2 } from 'lucide-react';
 import jsonData from './assets/output.json';
 import './components/layout.css';
@@ -279,6 +280,8 @@ function App() {
             showFilters={true}
           />
         );
+      case 'visualizer':
+        return <EventVisualizer cachedData={cachedData} />;
       default:
         return <DashboardOverview timeRange={timeRange} />;
     }

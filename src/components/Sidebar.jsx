@@ -8,6 +8,7 @@ const Sidebar = ({ activeView, setActiveView, isCollapsed, setIsCollapsed }) => 
         { name: 'History', icon: MessageSquare, id: 'conversations' },
         { name: 'Execution Plans', icon: FileText, id: 'plans' },
         { name: 'User Insights', icon: Users, id: 'users' },
+        { name: 'Event Visualizer', icon: Search, id: 'visualizer' },
         { name: 'Raw Logs', icon: Activity, id: 'raw' },
     ];
 
