@@ -6,8 +6,22 @@ const EventVisualizer = ({ cachedData }) => {
     const conversations = cachedData?.conversations || [];
     const messages = cachedData?.messages || [];
 
-    // Unique user IDs from conversations
-    const users = Array.from(new Set(conversations.map(c => c.user_id))).filter(Boolean);
+    // Map user IDs to emails for a more user-friendly dropdown
+    const userOptions = useMemo(() => {
+        const map = {};
+        const allItems = [...messages, ...(cachedData?.internal_events || [])];
+        allItems.forEach(item => {
+            if (item.user_id && item.user_email && !map[item.user_id]) {
+                map[item.user_id] = item.user_email;
+            }
+        });
+
+        const uniqueIds = Array.from(new Set(conversations.map(c => c.user_id))).filter(Boolean);
+        return uniqueIds.map(id => ({
+            id: id,
+            email: map[id] || id
+        })).sort((a, b) => a.email.localeCompare(b.email));
+    }, [conversations, messages, cachedData?.internal_events]);
 
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedConv, setSelectedConv] = useState('');
@@ -371,7 +385,7 @@ const EventVisualizer = ({ cachedData }) => {
                 <div className="ev-controls">
                     <select className="ev-input" value={selectedUser} onChange={handleUserChange} style={{ minWidth: '180px' }}>
                         <option value="">Choose User...</option>
-                        {users.map(u => <option key={u} value={u}>{u}</option>)}
+                        {userOptions.map(u => <option key={u.id} value={u.id}>{u.email}</option>)}
                     </select>
                     <select className="ev-input" value={selectedConv} onChange={(e) => setSelectedConv(e.target.value)} disabled={!selectedUser} style={{ minWidth: '220px' }}>
                         <option value="">{selectedUser ? "Select Conversation..." : "Choose User First"}</option>
