@@ -382,7 +382,7 @@ const EventVisualizer = ({ cachedData, selectedUser, setSelectedUser, selectedCo
                 </div>
                 <div className="ev-controls">
                     <select className="ev-input" value={selectedUser} onChange={handleUserChange} style={{ minWidth: '180px' }}>
-                        <option value="">Choose User...</option>
+                        <option value="">Choose User Email...</option>
                         {userOptions.map(u => <option key={u.id} value={u.id}>{u.email}</option>)}
                     </select>
                     <select className="ev-input" value={selectedConv} onChange={(e) => setSelectedConv(e.target.value)} disabled={!selectedUser} style={{ minWidth: '220px' }}>
@@ -418,7 +418,7 @@ const EventVisualizer = ({ cachedData, selectedUser, setSelectedUser, selectedCo
                     <div className="ev-placeholder-content">
                         <Layers size={64} color="#94a3b8" strokeWidth={1.5} />
                         <h2>Ready to Decode?</h2>
-                        <p>Select a <b>User</b> and <b>Conversation Session</b> from the header above to initialize the execution sequence visualization.</p>
+                        <p>Select a <b>User Email</b> and <b>Conversation Session</b> from the header above to initialize the execution sequence visualization.</p>
                         <div className="ev-placeholder-hint">
                             <span>Timeline</span>
                             <span>Table</span>
@@ -671,14 +671,14 @@ const EventVisualizer = ({ cachedData, selectedUser, setSelectedUser, selectedCo
                                                 <td>
                                                     {ev.sender && (
                                                         <span className={`ev-table-actor ${getActorClass(ev.sender)}`}>
-                                                            {ev.sender.toUpperCase()}
+                                                            {ev.sender === selectedUser ? (userOptions.find(u => u.id === ev.sender)?.email || ev.sender) : ev.sender.toUpperCase()}
                                                         </span>
                                                     )}
                                                 </td>
                                                 <td>
                                                     {ev.receiver && (
                                                         <span className={`ev-table-actor ${getActorClass(ev.receiver)}`}>
-                                                            {ev.receiver.toUpperCase()}
+                                                            {ev.receiver === selectedUser ? (userOptions.find(u => u.id === ev.receiver)?.email || ev.receiver) : ev.receiver.toUpperCase()}
                                                         </span>
                                                     )}
                                                 </td>
@@ -817,7 +817,7 @@ const EventVisualizer = ({ cachedData, selectedUser, setSelectedUser, selectedCo
                                                 <span className="ev-plan-badge">
                                                     {plan.type === 'INITIAL_PLAN_PRESENTED' ? 'INITIAL PLAN' : 'REVISED PLAN'}
                                                 </span>
-                                                <h3>Turn: {plan.turn_id?.substring(0, 8)}...</h3>
+                                                <h3>Turn: {plan.turn_id}</h3>
                                             </div>
                                             <div className={`ev-plan-mode mode-${plan.mode}`}>
                                                 {plan.mode.toUpperCase()} EXECUTION

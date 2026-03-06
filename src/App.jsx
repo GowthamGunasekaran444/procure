@@ -47,7 +47,7 @@ function App() {
             fontSize: 'inherit'
           }}
         >
-          {String(row._id).substring(0, 12)}...
+          {String(row._id)}
         </button>
       )
     },
@@ -65,13 +65,42 @@ function App() {
 
   const messageColumns = [
     { header: 'ID', accessor: '_id' },
-    { header: 'Conv ID', accessor: 'conversation_id' },
+    {
+      header: 'Conv ID',
+      render: (row) => (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedUser(row.user_id || '');
+            setSelectedConv(row.conversation_id || '');
+            setActiveView('visualizer');
+          }}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#3b82f6',
+            fontWeight: 800,
+            cursor: 'pointer',
+            padding: 0,
+            textDecoration: 'underline',
+            textAlign: 'left',
+            fontFamily: 'inherit',
+            fontSize: 'inherit'
+          }}
+        >
+          {row.conversation_id}
+        </button>
+      )
+    },
     { header: 'Turn ID', accessor: 'turn_id' },
     { header: 'Created', accessor: 'created_at' },
     { header: 'Type', accessor: 'type' },
     { header: 'Sender', accessor: 'sender' },
     { header: 'Receiver', accessor: 'receiver' },
-    { header: 'User ID', accessor: 'user_id' },
+    {
+      header: 'User Email',
+      render: (row) => row.user_email || row.user_id
+    },
     {
       header: 'Attachment',
       render: (row) => row.user_attachment_file_id ? (
