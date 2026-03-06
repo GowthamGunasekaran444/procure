@@ -11,7 +11,7 @@ const TopListCard = ({ title, data, labelKey, icon: Icon, color, description }) 
         display: 'flex',
         flexDirection: 'column',
         gap: '20px',
-        height: '100%',
+        minHeight: '220px',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02)',
         transition: 'transform 0.2s ease'
     }}>
@@ -274,9 +274,10 @@ const QueryTopics = ({ topics }) => {
                 </div>
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                    gap: '24px',
-                    alignItems: 'stretch'
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                    gap: '32px',
+                    rowGap: '48px', // Increased row gap to prevent overlap
+                    alignItems: 'start'
                 }}>
                     <TopListCard
                         title="Materials"
