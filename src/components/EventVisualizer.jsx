@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search, Share, Download, FileText, ChevronDown, ChevronRight, Play, Copy, Eye, X, Layers } from 'lucide-react';
 import './EventVisualizer.css';
 
-const EventVisualizer = ({ cachedData }) => {
+const EventVisualizer = ({ cachedData, selectedUser, setSelectedUser, selectedConv, setSelectedConv }) => {
     const conversations = cachedData?.conversations || [];
     const messages = cachedData?.messages || [];
 
@@ -23,10 +23,8 @@ const EventVisualizer = ({ cachedData }) => {
         })).sort((a, b) => a.email.localeCompare(b.email));
     }, [conversations, messages, cachedData?.internal_events]);
 
-    const [selectedUser, setSelectedUser] = useState('');
-    const [selectedConv, setSelectedConv] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
-    const [activeTab, setActiveTab] = useState('Table');
+    const [activeTab, setActiveTab] = useState('Timeline');
     const [expandedTurns, setExpandedTurns] = useState({});
 
     // Reset filters when conversation changes

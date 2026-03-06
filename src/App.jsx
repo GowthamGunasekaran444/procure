@@ -16,13 +16,41 @@ function App() {
   const availableRanges = Object.keys(jsonData);
   const [timeRange, setTimeRange] = useState(availableRanges.includes('1h') ? '1h' : availableRanges[0]);
   const [activeView, setActiveView] = useState('overview');
+  const [selectedUser, setSelectedUser] = useState('');
+  const [selectedConv, setSelectedConv] = useState('');
 
   const data = jsonData[timeRange] || jsonData[availableRanges[0]];
   const cachedData = data.cached_data || {};
 
   // Configuration for Data Explorer tables
   const conversationColumns = [
-    { header: 'ID', accessor: '_id' },
+    {
+      header: 'ID',
+      render: (row) => (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedUser(row.user_id || '');
+            setSelectedConv(row._id || '');
+            setActiveView('visualizer');
+          }}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#3b82f6',
+            fontWeight: 800,
+            cursor: 'pointer',
+            padding: 0,
+            textDecoration: 'underline',
+            textAlign: 'left',
+            fontFamily: 'inherit',
+            fontSize: 'inherit'
+          }}
+        >
+          {String(row._id).substring(0, 12)}...
+        </button>
+      )
+    },
     { header: 'Title', accessor: 'title' },
     { header: 'Status', accessor: 'status' },
     { header: 'Created At', accessor: 'created_at' }
@@ -281,7 +309,15 @@ function App() {
           />
         );
       case 'visualizer':
-        return <EventVisualizer cachedData={cachedData} />;
+        return (
+          <EventVisualizer
+            cachedData={cachedData}
+            selectedUser={selectedUser}
+            setSelectedUser={setSelectedUser}
+            selectedConv={selectedConv}
+            setSelectedConv={setSelectedConv}
+          />
+        );
       default:
         return <DashboardOverview timeRange={timeRange} />;
     }
